@@ -14,8 +14,8 @@ export default defineEventHandler(async (event) => {
   const fileName = `${slug}.md`; // Format the file name using the slug
 
   // GitHub repository details
-  const githubToken = process.env.GITHUB_TOKEN; // GitHub token stored in Vercel's environment variables
-  const owner = 'SalahEldin Fikri'; // Replace with your GitHub username
+  const githubToken = process.env.GITHUB_TOKEN; // Securely access the GitHub token
+  const owner = 'SalahEldinFikri'; // Replace with your GitHub username
   const repo = 'SalahEldinFikri.github.io'; // Replace with your GitHub repository name
   const filePath = `content/posts/${fileName}`; // Target path in the GitHub repo
 
@@ -38,7 +38,7 @@ ${content}`;
     const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${githubToken}`,
+        Authorization: `Bearer ${githubToken}`,  // Use the token securely
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
