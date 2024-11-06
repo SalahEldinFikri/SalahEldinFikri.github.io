@@ -15,8 +15,8 @@ export default defineEventHandler(async (event) => {
 
   // GitHub repository details
   const githubToken = process.env.GITHUB_TOKEN; // GitHub token stored in Vercel's environment variables
-  const owner = 'your-github-username'; // Replace with your GitHub username
-  const repo = 'your-repo-name'; // Replace with your GitHub repository name
+  const owner = 'SalahEldin Fikri'; // Replace with your GitHub username
+  const repo = 'SalahEldinFikri.github.io'; // Replace with your GitHub repository name
   const filePath = `content/posts/${fileName}`; // Target path in the GitHub repo
 
   // Format content as Markdown with front matter metadata
