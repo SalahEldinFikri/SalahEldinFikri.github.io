@@ -22,7 +22,10 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "@tiptap/core": "^2.0.0",        // Add TipTap core
+    "@tiptap/starter-kit": "^2.0.0", // Add starter kit for TipTap
+    "marked": "^4.0.0"               // Markdown parser
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
