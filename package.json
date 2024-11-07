@@ -24,6 +24,7 @@
     "vue": "latest",
     "vue-router": "latest",
     "@tiptap/core": "^2.0.0",
+    "@tiptap/vue-3": "^2.0.0",
     "@tiptap/starter-kit": "^2.0.0",
     "marked": "^4.0.0"
   },
