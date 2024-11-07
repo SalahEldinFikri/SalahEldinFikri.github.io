@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
 
   // Format the file name using the slug
   const fileName = `${slug}.md`;
-  const filePath = `./content/posts/${fileName}`;
   const githubToken = process.env.GITHUB_TOKEN;
   const owner = 'SalahEldinFikri'; // Replace with your GitHub username
   const repo = 'SalahEldinFikri.github.io'; // Replace with your GitHub repository name
@@ -47,12 +46,14 @@ ${content}`;
     // Get the current list of files (articles)
     const existingArticles = await getArticlesResponse.json();
 
-    // Sort the articles by their creation date (if needed, otherwise just add the new article)
-    const sortedArticles = existingArticles.sort((a, b) => {
-      const aDate = new Date(a.commit.committer.date);
-      const bDate = new Date(b.commit.committer.date);
-      return bDate - aDate; // Sort in descending order (newest first)
-    });
+    // Check if articles have commit information and sort if they do
+    const sortedArticles = existingArticles
+      .filter(article => article.commit && article.commit.committer)
+      .sort((a, b) => {
+        const aDate = new Date(a.commit.committer.date);
+        const bDate = new Date(b.commit.committer.date);
+        return bDate - aDate; // Sort in descending order (newest first)
+      });
 
     // Prepend the new article to the list
     const updatedArticles = [markdownContent, ...sortedArticles];
