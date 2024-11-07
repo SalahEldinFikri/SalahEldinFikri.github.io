@@ -1,33 +1,30 @@
 <template>
-  <div class="editor-container">
-    <!-- Editor Content -->
-    <EditorContent :editor="editor" />
+  <div class="container mx-auto py-20">
+    <h1 class="text-2xl mb-4">Write a Blog</h1>
+    <div>
+      <editor-content :editor="editor" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useEditor, EditorContent } from '@tiptap/core'
-import StarterKit from '@tiptap/starter-kit'
+import { useEditor } from '@tiptap/vue-3';
+import { StarterKit } from '@tiptap/starter-kit';
 
-// Initialize the editor using StarterKit extension
-const editor = ref(null)
-
-onMounted(() => {
-  editor.value = useEditor({
-    extensions: [
-      StarterKit, // Include built-in extensions like bold, italic, etc.
-    ],
-    content: '<p>Write your content here...</p>',
-  })
-})
+const editor = useEditor({
+  extensions: [
+    StarterKit,
+  ],
+  content: '<p>Hello, world!</p>',
+});
 </script>
 
 <style scoped>
-.editor-container {
-  border: 1px solid #ddd;
+/* You can customize the styling of the editor here */
+.editor {
+  border: 1px solid #ccc;
+  min-height: 400px;
   padding: 20px;
-  border-radius: 8px;
-  min-height: 200px;
+  font-family: 'Arial', sans-serif;
 }
 </style>
