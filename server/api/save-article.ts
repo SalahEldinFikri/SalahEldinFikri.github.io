@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
   const githubToken = process.env.GITHUB_TOKEN;
   const owner = 'SalahEldinFikri'; // Replace with your GitHub username
   const repo = 'SalahEldinFikri.github.io'; // Replace with your GitHub repository name
+  const filePath = `content/posts/${fileName}`; // Path relative to the repository root
 
   // Format content for markdown with metadata
   const markdownContent = `---
@@ -30,8 +31,8 @@ ${content}`;
   const contentBase64 = Buffer.from(markdownContent).toString('base64');
 
   try {
-    // Fetch the current articles (to prepend the new article to the top)
-    const getArticlesResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/content/posts/`, {
+    // Check if the file already exists to decide if we need to provide the `sha`
+    const getFileResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${githubToken}`,
@@ -39,45 +40,34 @@ ${content}`;
       },
     });
 
-    if (!getArticlesResponse.ok) {
-      return { status: 500, message: 'Failed to fetch existing articles' };
+    let sha = null;
+    if (getFileResponse.ok) {
+      // File exists, so we extract the `sha` for updating
+      const fileData = await getFileResponse.json();
+      sha = fileData.sha;
     }
 
-    // Get the current list of files (articles)
-    const existingArticles = await getArticlesResponse.json();
-
-    // Check if articles have commit information and sort if they do
-    const sortedArticles = existingArticles
-      .filter(article => article.commit && article.commit.committer)
-      .sort((a, b) => {
-        const aDate = new Date(a.commit.committer.date);
-        const bDate = new Date(b.commit.committer.date);
-        return bDate - aDate; // Sort in descending order (newest first)
-      });
-
-    // Prepend the new article to the list
-    const updatedArticles = [markdownContent, ...sortedArticles];
-
-    // Now, upload the new article to GitHub
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/content/posts/${fileName}`, {
+    // Proceed with creating or updating the file
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${githubToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: `Add new article: ${title}`,
+        message: `Add or update article: ${title}`,
         content: contentBase64,
+        sha, // Include sha only if updating an existing file
         branch: 'main', // Use the appropriate branch name
       }),
     });
 
     if (response.ok) {
-      return { status: 200, message: 'Article added successfully and pushed to GitHub!' };
+      return { status: 200, message: 'Article added or updated successfully and pushed to GitHub!' };
     } else {
       const error = await response.json();
       console.error('GitHub API error:', error);
-      return { status: 500, message: 'Failed to add article', error };
+      return { status: 500, message: 'Failed to add or update article', error };
     }
   } catch (error) {
     console.error('Error during article save:', error);
