@@ -1,4 +1,4 @@
-<!-- components/MarkdownEditor.vue -->
+ <!-- components/MarkdownEditor.vue -->
 <template>
   <div>
     <!-- Editor Container -->
